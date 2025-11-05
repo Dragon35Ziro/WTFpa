@@ -1,0 +1,386 @@
+﻿<Window x:Class="life.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:life"
+        xmlns:vm="clr-namespace:life.ViewModel"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="1080" Width="1920"
+        WindowStartupLocation="CenterScreen" Background="Black" WindowState="Maximized">
+
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+        <Window.Resources>
+        <ControlTemplate x:Key="MenuBtn" TargetType="Button">
+            <Grid x:Name="Btn" Height="100">
+                <Border BorderThickness="2,0,2,2" BorderBrush="Cyan">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{TemplateBinding Content}"
+                            
+                               Margin="30,0,0,0"
+                               Background="Transparent" FontSize="80" FontFamily = "Rec\fonts\#alumni sans pinstripe italic"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+
+
+
+                                        <DataTrigger Binding="{Binding Path=IsMouseOver, ElementName=Btn}" 
+                                             Value="true">
+                                            <Setter Property="Foreground" Value="Cyan"/>
+                                        </DataTrigger>
+                                        <!-- Триггер IsPressed пока не работает т.к. его перебивает триггер IsFocused -->
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                                              AncestorType={x:Type Button}},
+                                              Path=IsPressed}" Value="True">
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                                                AncestorType={x:Type Button}},
+                                                Path=IsFocused}" Value="True">
+                                            <Setter Property="Foreground" Value="Cyan"/>
+                                        </DataTrigger>
+
+
+
+
+
+                                    </Style.Triggers>
+
+
+                                </Style>
+                            </Label.Style>
+
+                        </Label>
+                    </StackPanel>
+                </Border>
+                <!-- Крч триггеры которые нам дают эффект заднего фона когда мы на кнопочки наводим -->
+                <Border Name="BackBtn" Background="White">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Opacity" Value="0"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsMouseOver, ElementName=Btn}" 
+                                     Value="true">
+                                    <Setter Property="Opacity" Value="0.2"/>
+                                </DataTrigger>
+
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+
+                </Border>
+                <!-- КОНЕЦ Крч триггеры которые нам дают эффект заднего фона когда мы на кнопочки наводим -->
+
+
+                <!--
+                
+                1
+                
+                ДЛЯ ЧАЙНИКОВ 
+                - Почему мы не можем прописать все в одном бордере?
+                - Ответ от гпт всея Руси: 
+                Вы можете объединить эти триггеры в одном Border, но столкнулись с ограничением, 
+                потому что два триггера (для IsMouseOver и IsFocused) могут работать параллельно и конфликтавать. В XAML можно задать оба состояния в одном Border, 
+                но они будут срабатывать одновременно, если оба условия истинны.
+                - Та же ошибка у тебя была и с прошлыми триггерами, когда цвет текста (фореграунд) не менялся при нажатии IsPressed, 
+                т.к. триггер IsFocused срабатывал вместе с IsPressed и перебивал его
+                
+                2
+                
+                БЛЯЯЯЯЯ крч нет это дебилизм я попробовала все в одном бордере и все прекрасно работает, но пока  оставим как делает дядя на ютубе
+                
+                
+                -->
+
+
+                <!-- триггероы  которые нам дают эффект заднего фона когда мы на кнопочки фокусируем-->
+                <Border Name="BackBtn2" Background="White">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Opacity" Value="0"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                                 AncestorType={x:Type Button}},
+                                   Path=IsFocused}" Value="True">
+                                    <Setter Property="Opacity" Value="0.2"/>
+                                </DataTrigger>
+
+
+
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+
+                </Border>
+                <!-- КОНЕЦ!!!! тили для триггеров которые нам дают эффект заднего фона когда мы на кнопочки фокусируем ПОЧЕМУ ВСЕ НЕЛЬЗЯ В ОДНОМ 7777777777-->
+
+
+                <!-- За каким то хуем мы создаем еще один бордер что бы сделать синенькую полосочку  -->
+                <Border Name="BackBtn3" >
+                    <Border.Style>
+                        <Style TargetType="Border">
+
+                            <!-- Устанавливаем начальные значения свойств -->
+                            <!-- Скрываем Border по умолчанию -->
+                            <Setter Property="Visibility" Value="Hidden"/>
+                            <!-- Устанавливаем толщину рамки: 7 пикселей слева и 0 пикселей в остальных направлениях -->
+                            <Setter Property="BorderThickness" Value="7,0,0,0"/>
+                            <!-- Устанавливаем цвет рамки на "Aqua" (аквамариновый) -->
+                            <Setter Property="BorderBrush" Value="Aqua"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                                    AncestorType={x:Type Button}},
+                   Path=IsFocused}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+
+
+
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+
+                </Border>
+                <!-- КОНЕЦ!!!! За каким то хуем мы создаем еще один бордер что бы сделать синенькую полосочку -->
+
+            </Grid>
+        </ControlTemplate>
+    </Window.Resources>
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25*"/>
+            <ColumnDefinition Width="75*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+          
+            <RowDefinition Height="20*"/>
+            <RowDefinition Height="100*"/>
+           
+        </Grid.RowDefinitions>
+
+
+        <!-- Создаем какую то хрень что бы страницы переключать-->
+        <Frame Grid.ColumnSpan="10" Grid.RowSpan="10" NavigationUIVisibility="Hidden" Content= "{Binding CurPage}"/>
+
+
+
+        <Grid x:Name="MenuIcon" Grid.Column="0" Grid.Row="0" >
+            <Border  BorderThickness="2,2,2,2" BorderBrush="Cyan" >
+
+
+
+
+
+                <Label    VerticalAlignment="Center" Foreground="Cyan"  HorizontalAlignment="Center">
+                    <Label.Style>
+                        <Style TargetType="Label">
+                            <Setter Property="Content" Value="Меню"/>
+                            <Setter Property="FontFamily" Value="Rec\fonts\#ForestSmooth Regular"/>
+                            <Setter Property="FontSize" Value="80"/>
+                            <Style.Triggers>
+                        
+
+
+
+                                <DataTrigger Binding="{Binding Path=IsChecked, ElementName=OpenClosesMenu}" Value="true">
+                                    <Setter Property="Content" Value="Life"/>
+                                    <Setter Property="FontFamily" Value=" Rec\fonts\#ForestSmooth Regular"/>
+                                    <Setter Property="FontSize" Value="100"/>
+                                </DataTrigger>
+
+
+
+
+
+
+
+
+
+
+                            </Style.Triggers>
+
+
+                        </Style>
+                    </Label.Style>
+
+                </Label>
+                
+                
+               
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </Border>
+        </Grid>
+
+        <Grid x:Name="Menu" Grid.Column="0" Grid.Row="1">
+
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <!-- На этом месте была эта поебота <Setter Property="Width" Value="225"/>, но она оказлась бессмыслена 
+                    т.к. все размеры мы указывали в процентах в самом начале работы (и я ваще хз скоко пикселнй будет в 25*-->
+                    
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsChecked, ElementName=OpenClosesMenu}" Value="true">
+                            <Setter Property="Width" Value="0"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+
+                </Style>
+            </Grid.Style>
+            
+            <Border BorderThickness="2,0,2,2" BorderBrush="Cyan" Grid.ColumnSpan="2"/>
+            <Border BorderThickness="0" Background="Black" Opacity="0.5" Grid.ColumnSpan="2"/>
+            <StackPanel Grid.ColumnSpan="2">
+
+                <Button Template="{StaticResource ResourceKey=MenuBtn}" Command="{Binding OpenPoiskPage}"
+                    Content= "Поиск" >
+                </Button>
+
+                <Button Template="{StaticResource ResourceKey=MenuBtn}" Command="{Binding OpenAccountPage}"
+                    Content= "Аккаунт" >
+                </Button>
+
+                <Button Template="{StaticResource ResourceKey=MenuBtn}" Command="{Binding OpenLikePage}"
+                     Content= "Комментарии"  >
+                </Button>
+
+                <Button Template="{StaticResource ResourceKey=MenuBtn}" Command="{Binding OpenLifePage}"
+                     Content= "Life"/>
+
+            </StackPanel>
+            
+            
+           
+        </Grid>
+
+        <Grid x:Name="MenuPoisk" Grid.Column="1" Grid.Row="0">
+        </Grid>
+
+        <Grid x:Name="Content" Grid.Column="1" Grid.Row="1">
+            <!-- Создаем кнопочку что бы можно было вдвигать и выдвигать менюшечку -->
+            <!-- Focusable="False" Делает так что бы при нажатии на иконка навождение с кнопок не спадало-->
+            <ToggleButton Focusable="False" x:Name="OpenClosesMenu" Height="100" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="20,0,0,0" Cursor="Hand">
+                <ToggleButton.Template>
+                    <ControlTemplate>
+                        <Image>
+                            <!-- Добавляем RenderTransform для сдвига изображения -->
+                            <Image.RenderTransform>
+                                <TranslateTransform x:Name="translateTransform" X="0" Y="0"/>
+                            </Image.RenderTransform>
+                            
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Setter Property="Source" Value="Rec\Icons\backleft.png"></Setter>
+                                    <!-- Напишем триггер, что бы менялась картинка при нажатии -->
+                                    <Style.Triggers>
+
+                                        <!-- Не работает, тк конфликтует с последним триггером -->
+                                        <DataTrigger Binding="{Binding Path=IsMouseOver, ElementName=OpenClosesMenu}" Value="true">
+                                            <Setter Property="Source" Value="Rec\Icons\backleftcolor.png"/>
+                                            
+                                           
+                                        </DataTrigger>
+
+
+
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                                                AncestorType={x:Type ToggleButton}},
+                                                Path=IsChecked}" Value="True">
+                                            <Setter Property="Source" Value="Rec\Icons\backright.png"></Setter>
+                                            
+                                            
+                                            
+
+
+
+                                           
+
+
+
+                                            <!-- Анимация для перемещения изображения при нажатии на ToggleButton -->
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <!-- Анимация для X-сдвига, перемещающая картинку влево -->
+                                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                             To="-400" 
+                                                            Duration="0:0:0.3"
+                                                        />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+
+                                            <!-- Возвращаем изображение в исходное положение, когда ToggleButton снова отключается (IsChecked=False) -->
+                                            <DataTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <!-- Анимация для возврата X-сдвига к начальному значению -->
+                                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                            To="0" 
+                                                            Duration="0:0:0.3"
+                                                           
+                                                            />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.ExitActions>
+
+                                            
+
+
+
+                                        </DataTrigger>
+
+
+                                        <DataTrigger Binding="{Binding Path=IsMouseOver, ElementName=OpenClosesMenu}" Value="true">
+                                            <Setter Property="Source" Value="Rec\Icons\backrightcolor.png"/>
+                                        </DataTrigger>
+
+
+
+
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </ControlTemplate>
+                </ToggleButton.Template>
+            </ToggleButton>
+        </Grid>
+
+    </Grid>
+
+</Window>
